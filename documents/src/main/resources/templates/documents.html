@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Documents - The assignment for Java Developer role with Saveondev.com</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container">
+		<h3>Documents</h3>
+
+		<div th:if="${new_doc != null}" class="alert alert-success">
+			<p>File <strong><span th:text="${new_doc}"></span></strong> uploaded successfully!</p>
+		</div>
+		<div th:if="${rejected_doc != null}" class="alert alert-success">
+			<p>File <strong><span th:text="${rejected_doc}"></span></strong> rejected successfully!</p>
+		</div>
+		<div th:if="${approved_doc != null}" class="alert alert-success">
+			<p>File <strong><span th:text="${approved_doc}"></span></strong> approved successfully!</p>
+		</div>
+		<div th:if="${deleted_doc != null}" class="alert alert-success">
+			<p>File <strong><span th:text="${deleted_doc}"></span></strong> deleted successfully!</p>
+		</div>
+
+		<a href="/document/upload" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i> Add book</a>
+
+		<br /><br />
+		<p th:if="${#lists.isEmpty(documents)}">No documents found</p>
+		<br /><br />
+
+		<table class="table" th:if="${not #lists.isEmpty(documents)}">
+			<tr>
+				<th>File Name</th>
+				<th>Description</th>
+				<th>Status</th>
+				<th></th>
+			</tr>
+			<tr data-th-each="document : ${documents}">
+				<td data-th-text="${document.fileName}"></td>
+				<td data-th-text="${document.description}"></td>
+				<td data-th-text="${document.status}"></td>
+				<td th:if="${document.status == 'Submitted'}">
+					<div class="form-group">
+						<div class="col-sm-3">
+							<form method="POST" th:action="@{/document/reject}">
+								<input type="hidden" name="uuid" id="uuid" th:value="${document.id}" />
+								<button type="submit" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i> Reject</button>
+							</form>
+						</div>
+						<div class="col-sm-3">
+							<form method="POST" th:action="@{/document/approve}">
+								<input type="hidden" name="uuid" id="uuid" th:value="${document.id}" />
+								<button type="submit" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-ok"></i> Approve</button>
+							</form>
+						</div>
+					</div>
+				</td>
+				<td th:if="${document.status == 'Approved'}">
+					<a th:href="${/document/download(uuid=${document.id})}" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-download"></i> Download</a>
+				</td>
+				<td th:if="${document.status == 'Rejected'}">
+					<form method="POST" th:action="@{/document/delete}">
+						<input type="hidden" name="uuid" id="uuid" th:value="${document.id}" />
+						<button type="submit" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove-sign"></i> Delete</button>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
