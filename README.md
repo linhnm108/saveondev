@@ -3,6 +3,7 @@ The assignment for Java Developer role with Saveondev.com
 
 1. Create Spring Boot Web Application to manage documents (CRUD, upload, download)
   + Using Google Cloud Storage to store physical files.
+  + Using PostgreSQL to store data.
 2. Integrate Activiti with Spring Boot application to manage the upload document process.
 This is main flow of this process:
   + Go to homepage: http://localhost:8080/ then upload file to start the process.
