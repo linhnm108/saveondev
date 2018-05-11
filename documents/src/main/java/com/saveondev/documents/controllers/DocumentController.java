@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,9 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
 
+    @Autowired
+    private RuntimeService runtimeService;
+
     /**
      * Upload document.
      * @param file
@@ -38,6 +43,11 @@ public class DocumentController {
     public String upload(@RequestParam(name="file") MultipartFile file, @RequestParam(name="description") String description, RedirectAttributes redir) {
         Document document = this.documentService.uploadDocument(file, description);
         redir.addAttribute(NEW_DOC, document.getFileName());
+
+        // Start document approval process.
+        ProcessInstance process = this.runtimeService.startProcessInstanceByKey("PublicDocumentProcess");
+        this.runtimeService.setVariable(process.getId(), "document", document);
+
         return "redirect:/";
     }
 

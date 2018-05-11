@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Documents - The assignment for Java Developer role with Saveondev.com</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container">
+		<h3>Your tasks</h3>
+		<p th:if="${#lists.isEmpty(tasks)}">No pending task found</p>
+		<br /><br />
+
+		<table class="table" th:if="${not #lists.isEmpty(tasks)}">
+			<tr>
+				<th>File Name</th>
+				<th>Description</th>
+				<th>Status</th>
+				<th></th>
+			</tr>
+			<tr data-th-each="task : ${tasks}">
+				<td data-th-text="${task.document.fileName}"></td>
+				<td data-th-text="${task.document.description}"></td>
+				<td data-th-text="${task.document.status}"></td>
+				<td th:if="${task.document.status == 'Submitted'}">
+					<div class="form-group">
+						<div class="col-sm-3">
+							<a th:href="${task.document.downloadUrl}" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-download"></i> Download</a>
+						</div>
+						<div class="col-sm-3">
+							<form method="POST" th:action="@{/task/reject}">
+								<input type="hidden" name="taskId" id="taskId" th:value="${task.taskId}" />
+								<button type="submit" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i> Reject</button>
+							</form>
+						</div>
+						<div class="col-sm-3">
+							<form method="POST" th:action="@{/task/approve}">
+								<input type="hidden" name="taskId" id="taskId" th:value="${task.taskId}" />
+								<button type="submit" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-ok"></i> Approve</button>
+							</form>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

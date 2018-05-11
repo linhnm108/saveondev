@@ -24,7 +24,7 @@
 			<p>File <strong><span th:text="${deleted_doc}"></span></strong> deleted successfully!</p>
 		</div>
 
-		<a href="/document/upload" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i> Add book</a>
+		<a href="/document/upload" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i> Add document</a>
 
 		<br /><br />
 		<p th:if="${#lists.isEmpty(documents)}">No documents found</p>
@@ -41,6 +41,7 @@
 				<td data-th-text="${document.fileName}"></td>
 				<td data-th-text="${document.description}"></td>
 				<td data-th-text="${document.status}"></td>
+	<!--
 				<td th:if="${document.status == 'Submitted'}">
 					<div class="form-group">
 						<div class="col-sm-3">
@@ -57,8 +58,9 @@
 						</div>
 					</div>
 				</td>
+	-->
 				<td th:if="${document.status == 'Approved'}">
-					<a th:href="${/document/download(uuid=${document.id})}" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-download"></i> Download</a>
+					<a th:href="${document.downloadUrl}" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-download"></i> Download</a>
 				</td>
 				<td th:if="${document.status == 'Rejected'}">
 					<form method="POST" th:action="@{/document/delete}">

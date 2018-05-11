@@ -1,12 +1,11 @@
 package com.saveondev.documents.services.impl;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.saveondev.documents.common.Constants;
@@ -15,7 +14,7 @@ import com.saveondev.documents.repositories.DocumentRepository;
 import com.saveondev.documents.services.DocumentService;
 import com.saveondev.documents.utils.GoogleCloudStorageUtils;
 
-@Service
+@Component
 public class DocumentServiceImpl implements DocumentService {
 
     @Value("${cloud.storage.bucket.name:saveondev}")
@@ -48,16 +47,14 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document rejectDocument(String uuid) {
-        Optional<Document> optionalDoc = this.documentRepo.findById(UUID.fromString(uuid));
-        Document doc = optionalDoc.get();
+        Document doc = this.documentRepo.findOne(UUID.fromString(uuid));
         doc.setStatus(Constants.DOCUMENT_REJECTED);
         return this.documentRepo.save(doc);
     }
 
     @Override
     public Document approveDocument(String uuid) {
-        Optional<Document> optionalDoc = this.documentRepo.findById(UUID.fromString(uuid));
-        Document doc = optionalDoc.get();
+        Document doc = this.documentRepo.findOne(UUID.fromString(uuid));
         doc.setStatus(Constants.DOCUMENT_APPROVED);
         return this.documentRepo.save(doc);
     }
@@ -65,10 +62,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void deleteDocument(String uuid) {
         // Delete on google cloud storage.
-        Optional<Document> optionalDoc = this.documentRepo.findById(UUID.fromString(uuid));
-        Document doc = optionalDoc.get();
+        Document doc = this.documentRepo.findOne(UUID.fromString(uuid));
         GoogleCloudStorageUtils.deleteFileOnCloudStorage(doc.getFileName(), this.bucketName);
         // Delete on database
-        this.documentRepo.deleteById(UUID.fromString(uuid));
+        this.documentRepo.delete(UUID.fromString(uuid));
     }
 }
